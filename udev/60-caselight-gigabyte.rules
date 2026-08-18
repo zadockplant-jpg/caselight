@@ -1,0 +1,2 @@
+# Gigabyte RGB Fusion 2.0 IT5711 controller — CaseLight
+KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="048d", ATTRS{idProduct}=="5711", MODE="0660", TAG+="uaccess"

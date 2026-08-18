@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "caselight-controller"
+version = "1.0.0"
+description = "Cross-platform Gigabyte RGB Fusion 2.0 IT5711 case-light controller"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "TheForge" }]
+dependencies = [
+  "liquidctl>=1.15,<2",
+  "numpy>=1.26; sys_platform == 'win32'",
+  "soundcard>=0.4.4; sys_platform == 'win32'",
+]
+
+[project.optional-dependencies]
+build = ["pyinstaller>=6.10,<7"]
+test = ["pytest>=8,<10"]
+
+[project.scripts]
+caselight = "caselight.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["caselight*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+ignore = [
+  "BLE001", # Thread and hardware boundaries must turn third-party failures into UI status.
+  "EXE002", # The shared dual-boot volume exposes every file as executable.
+]

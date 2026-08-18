@@ -1,0 +1,3 @@
+liquidctl>=1.15,<2
+numpy>=1.26; sys_platform == "win32"
+soundcard>=0.4.4; sys_platform == "win32"
