@@ -14,8 +14,8 @@ jobs:
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: Install Linux UI dependencies
@@ -27,7 +27,7 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Build
         run: pyinstaller --noconfirm --clean CaseLight.spec
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: CaseLight-${{ runner.os }}
           path: |
