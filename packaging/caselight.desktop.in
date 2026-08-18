@@ -1,0 +1,15 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=CaseLight
+GenericName=Case Lighting Controller
+Comment=Control case lighting, tempo effects, and music visualization
+Exec=@EXECUTABLE@
+Icon=@ICON@
+Path=@PROJECT_DIR@
+Terminal=false
+StartupNotify=true
+Categories=Settings;HardwareSettings;
+Keywords=RGB;lighting;case;music;visualizer;
+StartupWMClass=caseLight
+X-KDE-FormFactor=desktop;tablet;handset;

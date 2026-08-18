@@ -37,6 +37,12 @@ sudo apt install python3-venv python3-tk libhidapi-hidraw0
 ./scripts/run-linux.sh
 ```
 
+The built copy can be added to the desktop and application menu with:
+
+```bash
+./scripts/install-desktop-shortcut-linux.sh
+```
+
 If Detect finds the controller but cannot open it, use **Settings → Install
 Linux device access**. CaseLight shows an always-on-top explanation before the
 system password prompt. The installer changes only the udev permission rule for
@@ -55,6 +61,13 @@ Install 64-bit Python 3.11+ with the Python launcher, then run:
 ```powershell
 Set-ExecutionPolicy -Scope Process Bypass
 .\scripts\run-windows.ps1
+```
+
+After building the Windows executable, install Desktop and Start Menu
+shortcuts with:
+
+```powershell
+.\scripts\install-desktop-shortcut-windows.ps1
 ```
 
 The Windows environment installs `liquidctl`, NumPy, and SoundCard. The latter
