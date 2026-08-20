@@ -14,6 +14,8 @@ class StartupTests(unittest.TestCase):
             set_start_with_system(True, target=target, command=["/opt/Case Light/caselight", "--minimized"])
             content = target.read_text(encoding="utf-8")
             self.assertIn("--minimized", content)
+            self.assertIn('Exec="/opt/Case Light/caselight" "--minimized"', content)
+            self.assertNotIn("Exec='/opt", content)
             self.assertTrue(is_start_with_system_enabled(target))
             set_start_with_system(False, target=target)
             self.assertFalse(target.exists())

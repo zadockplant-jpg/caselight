@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import os
-import shlex
 import subprocess
 import sys
 from pathlib import Path
@@ -21,6 +20,29 @@ def startup_file() -> Path:
     return Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "autostart" / "caselight.desktop"
 
 
+def _desktop_exec_argument(argument: str) -> str:
+    """Quote one argument using the freedesktop Exec field grammar.
+
+    Exec fields are not shell commands.  ``shlex.quote`` produces single
+    quotes that become part of the executable path when a desktop environment
+    parses the entry.  CaseLight is commonly stored in a shared folder whose
+    path contains spaces, so use the desktop-entry double-quote rules.
+    """
+
+    escaped = argument.replace("\\", "\\\\")
+    escaped = escaped.replace('"', '\\"').replace("`", "\\`").replace("$", "\\$")
+    return f'"{escaped}"'
+
+
+def _atomic_text(path: Path, content: str) -> None:
+    temporary = path.with_name(f".{path.name}.tmp")
+    with temporary.open("w", encoding="utf-8", newline="") as handle:
+        handle.write(content)
+        handle.flush()
+        os.fsync(handle.fileno())
+    os.replace(temporary, path)
+
+
 def set_start_with_system(enabled: bool, *, target: Path | None = None, command: list[str] | None = None) -> Path:
     path = target or startup_file()
     if not enabled:
@@ -31,7 +53,7 @@ def set_start_with_system(enabled: bool, *, target: Path | None = None, command:
     if sys.platform == "win32" or path.suffix.lower() == ".cmd":
         content = '@echo off\r\nstart "" ' + subprocess.list2cmdline(argv) + "\r\n"
     else:
-        executable = " ".join(shlex.quote(part) for part in argv)
+        executable = " ".join(_desktop_exec_argument(part) for part in argv)
         content = "\n".join(
             (
                 "[Desktop Entry]",
@@ -44,9 +66,7 @@ def set_start_with_system(enabled: bool, *, target: Path | None = None, command:
                 "",
             )
         )
-    temporary = path.with_name(f".{path.name}.tmp")
-    temporary.write_text(content, encoding="utf-8")
-    os.replace(temporary, path)
+    _atomic_text(path, content)
     return path
 
 

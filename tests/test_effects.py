@@ -35,11 +35,20 @@ class EffectTests(unittest.TestCase):
                 self.assertLessEqual(intensity, 1.0)
 
     def test_music_styles_return_three_zones(self) -> None:
-        for style in ("Spectrum", "Three-band", "Bass pulse", "Rainbow energy", "Beat flash", "Heatmap"):
+        styles = ("Spectrum", "Three-band", "Bass pulse", "Rainbow energy", "Beat flash", "Heatmap")
+        frames = {}
+        for style in styles:
             frame, hue = music_frame(style, (0.2, 0.5, 0.8), THEMES["Ocean"], 0.2, 0.03)
+            frames[style] = frame
             self.assertEqual(len(frame), 3)
             self.assertGreaterEqual(hue, 0.0)
             self.assertLessEqual(hue, 1.0)
+        self.assertEqual(len(set(frames.values())), len(styles))
+
+    def test_tempo_changes_change_the_beat_locked_frame(self) -> None:
+        slower = effect_frame("Tempo bounce", 0.25, THEMES["Neon Harbor"], 60, "1 beat")
+        faster = effect_frame("Tempo bounce", 0.25, THEMES["Neon Harbor"], 120, "1 beat")
+        self.assertNotEqual(slower, faster)
 
 
 if __name__ == "__main__":
