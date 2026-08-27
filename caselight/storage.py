@@ -83,6 +83,16 @@ def resolve_state_dir(anchor: Path | None = None) -> tuple[Path, str]:
         pass
 
     root = volume_root(anchor or application_anchor())
+    if sys.platform == "win32":
+        # The Windows system root is not a reliable per-user data location.
+        # In particular, os.access() can report a root as writable even when
+        # UAC prevents a standard user from creating C:\.caselight. Keep the
+        # default install durable by using the user's roaming profile on the
+        # system drive; a different writable volume still gets shared state.
+        home_anchor = Path.home().anchor.casefold()
+        root_anchor = root.anchor.casefold()
+        if root_anchor == home_anchor:
+            return local_config_dir() / "data", "per-user fallback"
     if root != Path(root.anchor) or os.access(root, os.W_OK):
         return root / STATE_FOLDER_NAME, "same-volume shared profile"
     return local_config_dir() / "data", "per-user fallback"

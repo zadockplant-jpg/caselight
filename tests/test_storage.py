@@ -30,6 +30,24 @@ class StorageTests(unittest.TestCase):
             self.assertEqual(directory, Path(temporary).resolve())
             self.assertIn(STATE_ENV, reason)
 
+    def test_windows_system_drive_state_survives_reload(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary, mock.patch.dict(
+            os.environ,
+            {"APPDATA": temporary, STATE_ENV: ""},
+            clear=False,
+        ), mock.patch("caselight.storage.sys.platform", "win32"), mock.patch(
+            "caselight.storage.volume_root", return_value=Path("/")
+        ):
+            first = StateStore(anchor=Path("/installed/CaseLight.exe"), migrate_legacy=False)
+            expected = Path(temporary).resolve() / "CaseLight" / "data"
+            self.assertEqual(first.directory, expected)
+            state = first.load()
+            state["brightness"] = 37
+            first.save(state)
+
+            second = StateStore(anchor=Path("/installed/CaseLight.exe"), migrate_legacy=False)
+            self.assertEqual(second.load()["brightness"], 37)
+
     def test_written_state_is_valid_json(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             store = StateStore(Path(temporary), migrate_legacy=False)

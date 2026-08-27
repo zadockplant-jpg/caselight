@@ -96,6 +96,10 @@ If the app is installed onto each operating system's local disk, open
 on the shared disk. Each OS keeps only a local pointer to that folder. You can
 also launch with `--state-dir PATH` or set `CASELIGHT_STATE_DIR`.
 
+On Windows, an install on the system drive defaults to the durable per-user
+folder `%APPDATA%\CaseLight\data`, so settings survive shutdowns, reboots, and
+application updates. A shared folder can still be selected explicitly.
+
 **Start CaseLight when I sign in** writes one ordinary per-user startup entry.
 The preference itself is shared, so CaseLight creates the equivalent entry when
 it next runs under the other operating system. **Restore my last lighting
