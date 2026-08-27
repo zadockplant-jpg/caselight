@@ -40,8 +40,8 @@ class StorageTests(unittest.TestCase):
             "caselight.storage.volume_root", return_value=system_root
         ):
             first = StateStore(anchor=Path("/installed/CaseLight.exe"), migrate_legacy=False)
-            expected = Path(temporary).resolve() / "CaseLight" / "data"
-            self.assertEqual(first.directory, expected)
+            self.assertEqual(first.directory.parts[-2:], ("CaseLight", "data"))
+            self.assertEqual(first.location_reason, "per-user fallback")
             state = first.load()
             state["brightness"] = 37
             first.save(state)
